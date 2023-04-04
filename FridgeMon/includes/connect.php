@@ -1,8 +1,8 @@
 <?php
-$servername = "plesk.remote.ac";
-$username = "ws330240_Projects";
-$password = "M0nday08#";
-$database="ws330240_AandR";
+$servername = "#";
+$username = "#";
+$password = "##";
+$database="#";
 
 // Create connection
 $conn = new mysqli($servername, $username, $password,$database);
