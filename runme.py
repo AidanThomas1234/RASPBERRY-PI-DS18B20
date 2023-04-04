@@ -1,3 +1,4 @@
+#Importts area
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 from matplotlib import style
@@ -7,10 +8,12 @@ import os
 import glob
 import time
 import tkinter as tk
-from playsound import playsound
+import csv
+import mysql.connector
 
+############################################
 
-
+#Tempature reading
  
 # These tow lines mount the device:
 os.system('modprobe w1-gpio')
@@ -46,51 +49,46 @@ def read_temp():
         temp_f = temp_c * 9.0 / 5.0 + 32.0
         return temp_c, temp_f
 
-
+########################################################
     
-#Our GUI
-window=tk.Tk()
-
-
-warning=tk.Label(
-    foreground="white",
-    background="red",
-    width="100",
-    height="5",
-    text="Warning tempature to high !!!!!!",
-    font=(20)
+#Database connections
+mydb=mysql.connector.connect(
+    host="plesk.remote.ac",
+    user="ws330240_Projects",
+    password="M0nday08#",
+    database="ws330240_AandR"
+)     
     
-    )
-window.geometry('520x300')
+mycursor=mydb.cursor()
 
 
-    
 
 
 print(' rom: '+ read_rom())
 while True:
     
+    time.sleep(3600)#writes temp every 3600 seconds ( 1hour )
+        
+    #sql statment
+    sql="INSERT INTO `Fridgetemp` (`Tempature`,`date and time`) VALUES(%s,%s);"
+    L=datetime.now()#inserts current datetime into database ( databsase value needs to be set to datetime)
+    val=(x,L)
     
-    window.update()
-    x=int((open('/sys/bus/w1/devices/28-062163219b90/temperature').read()))
-    test=tk.Label(
-            foreground="white",
-            text=x
-            )
-    test.pack()
-    window.update()
+    
+ 
+
      
-    if(x<28000):#This is the threshhold to which the tempature should be 
+    if(x<30000):#This is the threshhold to which the tempature should be 
         print(' C=%3.3f  F=%3.3f'% read_temp())
+        p=str(x)
+
+        mycursor.execute(sql,val)
+        mydb.commit()
     else:
         
-
-        
-        warning.pack()
-        test.pack()
-        window.update()
         print("Warning tempature to high !!!!!!")
         break
 
 
 
+#https://github.com/AidanThomas1234
