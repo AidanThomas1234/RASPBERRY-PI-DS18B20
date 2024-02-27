@@ -1,19 +1,11 @@
-#Importts area
-import matplotlib.pyplot as plt
-import matplotlib.animation as animation
-from matplotlib import style
-import numpy as np
 from datetime import datetime
 import os
 import glob
 import time
-import tkinter as tk
-import csv
 import mysql.connector
 
-############################################
 
-#Tempature reading
+
  
 # These tow lines mount the device:
 os.system('modprobe w1-gpio')
@@ -49,17 +41,24 @@ def read_temp():
         temp_f = temp_c * 9.0 / 5.0 + 32.0
         return temp_c, temp_f
 
-########################################################
+
     
+
+
+
+
+
+
 #Database connections
 mydb=mysql.connector.connect(
     host="plesk.remote.ac",
     user="ws330240_Projects",
     password="M0nday08#",
     database="ws330240_AandR"
-)     
+)   
     
 mycursor=mydb.cursor()
+
 
 
 
@@ -67,28 +66,37 @@ mycursor=mydb.cursor()
 print(' rom: '+ read_rom())
 while True:
     
-    time.sleep(3600)#writes temp every 3600 seconds ( 1hour )
-        
+    
+    #This set verible x as the tempature output in c
+    Tempature1=int((open('/sys/bus/w1/devices/28-062163219b90/temperature').read()))
+    Tempature2=int((open('/sys/bus/w1/devices/28-3c01b556708d/temperature').read()))
+    Tempature3=int((open('/sys/bus/w1/devices/28-0621623b888d/temperature').read()))
+    Tempature4=int((open('/sys/bus/w1/devices/28-3ce10457cfdd/temperature').read()))
+    
+
+
+    
     #sql statment
-    sql="INSERT INTO `Fridgetemp` (`Tempature`,`date and time`) VALUES(%s,%s);"
-    L=datetime.now()#inserts current datetime into database ( databsase value needs to be set to datetime)
-    val=(x,L)
+
+    sql="INSERT INTO `Fridgetemp` (`ID`,`Tempature1`,`Tempature2`,`Tempature3`,`Tempature4`,`date and time`) VALUES(NULL,%s,%s,%s,%s,%s);"
+    L=datetime.now()
+    val=(Tempature1,Tempature2,Tempature3,Tempature4,L)
     
     
- 
 
      
-    if(x<30000):#This is the threshhold to which the tempature should be 
+    if(Tempature1<40000):#This is the threshhold to which the tempature should be 
         print(' C=%3.3f  F=%3.3f'% read_temp())
-        p=str(x)
-
+        p=str(Tempature1)
         mycursor.execute(sql,val)
         mydb.commit()
+        time.sleep(1800)
     else:
         
+
+      
         print("Warning tempature to high !!!!!!")
-        break
+        
 
 
-
-#https://github.com/AidanThomas1234
+# close the file
