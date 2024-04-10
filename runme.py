@@ -1,8 +1,9 @@
 from datetime import datetime
 import os
 import glob
-import time
-import mysql.connector
+import time 
+import MySQLdb
+
 
 
 
@@ -50,7 +51,7 @@ def read_temp():
 
 
 #Database connections
-mydb=mysql.connector.connect(
+mydb=MySQLdb.connect(
     host="#",
     user="#",
     password="#",
@@ -68,35 +69,28 @@ while True:
     
     
     #This set verible x as the tempature output in c
-    Tempature1=int((open('/sys/bus/w1/devices/28-062163219b90/temperature').read()))
-    Tempature2=int((open('/sys/bus/w1/devices/28-3c01b556708d/temperature').read()))
-    Tempature3=int((open('/sys/bus/w1/devices/28-0621623b888d/temperature').read()))
-    Tempature4=int((open('/sys/bus/w1/devices/28-3ce10457cfdd/temperature').read()))
+   #These IDs are unique to probe itself , this will be differant for yours as all are uniqe=. See sys/bus/W1/devices
+    Tempature1=int((open('/sys/bus/w1/devices/28-3ce10457cfdd/temperature').read()))
     
 
 
     
     #sql statment
 
-    sql="INSERT INTO `Fridgetemp` (`ID`,`Tempature1`,`Tempature2`,`Tempature3`,`Tempature4`,`date and time`) VALUES(NULL,%s,%s,%s,%s,%s);"
+    sql="INSERT INTO `Brod` (`ID`,`Tempature`,`date and time`) VALUES(NULL,%s,%s);"
+    
     L=datetime.now()
-    val=(Tempature1,Tempature2,Tempature3,Tempature4,L)
+    val=(Tempature1,L)
+    print(' C=%3.3f  F=%3.3f'% read_temp())
+    p=str(Tempature1)
+    mycursor.execute(sql,val)
+    mydb.commit()
+    time.sleep(3600)
+
     
     
 
-     
-    if(Tempature1<40000):#This is the threshhold to which the tempature should be 
-        print(' C=%3.3f  F=%3.3f'% read_temp())
-        p=str(Tempature1)
-        mycursor.execute(sql,val)
-        mydb.commit()
-        time.sleep(1800)
-    else:
-        
 
-      
-        print("Warning tempature to high !!!!!!")
-        
 
 
 # close the file
