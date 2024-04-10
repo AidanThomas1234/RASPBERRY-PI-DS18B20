@@ -51,10 +51,10 @@ def read_temp():
 
 #Database connections
 mydb=mysql.connector.connect(
-    host="plesk.remote.ac",
-    user="ws330240_Projects",
-    password="M0nday08#",
-    database="ws330240_AandR"
+    host="#",
+    user="#",
+    password="#",
+    database="#"
 )   
     
 mycursor=mydb.cursor()
