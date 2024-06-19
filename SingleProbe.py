@@ -100,8 +100,7 @@ while True:
     temp_c, temp_f = read_temp()
     
     # SQL statement
-    sql="INSERT INTO `BrodericksFreezer` (`ID`, `Tempature`, `DateandTime`) VALUES (NULL, '%s', '%s')"
-    
+    sql = "INSERT INTO `Brod` (`ID`,`Tempature`,`date and time`) VALUES(NULL,%s,%s);"
     current_time = datetime.now()  # inserts current datetime into database (database value needs to be set to datetime)
     val = (temp_c, current_time)
     
